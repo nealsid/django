@@ -229,13 +229,14 @@ class PBKDF2PasswordHasher(BasePasswordHasher):
     algorithm = "pbkdf2_sha256"
     iterations = 12000
     digest = hashlib.sha256
+    dklen = 0
 
     def encode(self, password, salt, iterations=None):
         assert password is not None
         assert salt and '$' not in salt
         if not iterations:
             iterations = self.iterations
-        hash = pbkdf2(password, salt, iterations, digest=self.digest)
+        hash = pbkdf2(password, salt, iterations, dklen = self.dklen, digest=self.digest)
         hash = base64.b64encode(hash).decode('ascii').strip()
         return "%s$%d$%s$%s" % (self.algorithm, iterations, salt, hash)
 
